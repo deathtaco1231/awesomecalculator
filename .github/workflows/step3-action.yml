@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install --package-lock-only
+          npm config set legacy-peer-deps false
           npm ci
           
       #- name: Install Playwright Browsers
