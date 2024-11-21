@@ -8,7 +8,7 @@ on:
 
 jobs:
   testing:
-    name: Download artifact
+    name: download-artifact
     runs-on: ubuntu-latest
 
     # We need to make sure that we have actions read access to get the previous artifact
@@ -20,8 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      with:
-        node-version: 18
+        with:
+          node-version: 18
 
       #- name: Install dependencies
         #run: |
