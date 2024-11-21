@@ -10,8 +10,8 @@ jobs:
   testing:
     name: download-artifact
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
-    # We need to make sure that we have actions read access to get the previous artifact
     permissions:
       contents: read
       actions: read
@@ -23,12 +23,6 @@ jobs:
         with:
           node-version: 18
 
-      #- name: Install dependencies
-        #run: |
-          #npm config set legacy-peer-deps false
-          #npm ci  
-      #- name: Install Playwright Browsers
-       # run: npx playwright install --with-deps
       - name: Download artifact
         uses: actions/github-script@v6
         env:
