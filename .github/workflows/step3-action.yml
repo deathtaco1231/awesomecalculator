@@ -30,7 +30,7 @@ jobs:
       #- name: Install Playwright Browsers
        # run: npx playwright install --with-deps
       - name: Download artifact
-        uses: actions/github-script@v7
+        uses: actions/github-script
         env:
           WORKFLOW_FILENAME: step.yml
           ARTIFACT_NAME: awesome-calculator
