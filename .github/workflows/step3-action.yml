@@ -39,5 +39,5 @@ jobs:
           UNZIP_DIR: artifact
         with:
           script: |
-            const script = require('src/artifact-retrieval.js')
+            const script = require('src/artifact_retrieval.js')
             await script({github, context, core})  
