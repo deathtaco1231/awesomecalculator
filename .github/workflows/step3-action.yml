@@ -1,4 +1,4 @@
-name: E2E Testing
+name: Step3Action
 
 on: 
   workflow_dispatch:
@@ -8,8 +8,7 @@ on:
 
 jobs:
   testing:
-    name: Start E2E Testing
-    timeout-minutes: 60
+    name: Download artifact
     runs-on: ubuntu-latest
 
     # We need to make sure that we have actions read access to get the previous artifact
@@ -21,35 +20,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-        with:
-          node-version: 18
+      with:
+        node-version: 18
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-
+      #- name: Install dependencies
+        #run: |
+          #npm config set legacy-peer-deps false
+          #npm ci  
+      #- name: Install Playwright Browsers
+       # run: npx playwright install --with-deps
       - name: Download artifact
         uses: actions/github-script@v6
         continue-on-error: true
         env:
-          WORKFLOW_FILENAME: testing.yml
-          ARTIFACT_NAME: playwright-snapshots
-          ARTIFACT_FILENAME: playwright-snapshots.zip
-          UNZIP_DIR: tests
+          WORKFLOW_FILENAME: step.yml
+          ARTIFACT_NAME: awesome-calculator
+          ARTIFACT_FILENAME: awesome-calculator.zip
+          UNZIP_DIR: artifact
         with:
           script: |
-            const script = require('./scripts/download-previous-artifact.js')
-            await script({github, context, core})            
-
-      - name: Run Playwright tests
-        run: npx playwright test
-        continue-on-error: true
-
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-snapshots
-          path: tests/*-snapshots/
-          retention-days: 30
+            const script = require('artifact-retrieval.js')
+            await script({github, context, core})  
