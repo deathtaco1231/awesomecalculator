@@ -7,25 +7,40 @@ on:
     types: [completed]
 
 jobs:
-  step3_action:
+  testing:
+    name: Download artifact
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    # We need to make sure that we have actions read access to get the previous artifact
+    permissions:
+      contents: read
+      actions: read
+      packages: write
+
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.10.11"
-    - name: Execute retrieval of artifact
-      run: |
-        import * as actionsGithub from '@actions/github';
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-const githubToken = actionsCore.getInput('token');
+      - name: Install dependencies
+        run: npm ci
 
-const artifacts = (await actionsGithub.getOctokit(githubToken).rest.actions.listArtifactsForRepo({
-    owner: actionsGithub.context.repo.owner,
-    repo: actionsGithub.context.repo.repo,
-    name: 'manifest'
-  })).data.artifacts;
+      #- name: Install Playwright Browsers
+       # run: npx playwright install --with-deps
+
+      - name: Download artifact
+        uses: actions/github-script@v6
+        continue-on-error: true
+        env:
+          WORKFLOW_FILENAME: step.yml
+          ARTIFACT_NAME: awesome-calculator
+          ARTIFACT_FILENAME: awesome-calculator.zip
+          UNZIP_DIR: tests
+        with:
+          script: |
+            const script = require('artifact-retrieval.js')
+            await script({github, context, core})  
+        
 
         
